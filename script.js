@@ -1,5 +1,5 @@
-// In-memory habit list — habits reset on page refresh (persistence added next)
-let habits = [];
+// Added: localStorage so habits survive page refresh
+const STORAGE_KEY = 'habit-tracker-v1';
 
 function getTodayString() {
   return new Date().toISOString().split('T')[0];
@@ -17,7 +17,20 @@ function escapeHtml(str) {
     .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
 }
 
+function loadHabits() {
+  try {
+    return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+  } catch {
+    return [];
+  }
+}
+
+function saveHabits(habits) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(habits));
+}
+
 function render() {
+  const habits  = loadHabits();
   const list    = document.getElementById('habit-list');
   const emptyMsg = document.getElementById('empty-message');
   const today   = getTodayString();
@@ -57,18 +70,21 @@ function render() {
 }
 
 function addHabit(name) {
+  const habits = loadHabits();
   habits.push({
     id:             Date.now().toString(),
     name:           name.trim(),
     completedDates: [],
     createdAt:      getTodayString(),
   });
+  saveHabits(habits);
   render();
 }
 
 function toggleHabit(id) {
-  const today = getTodayString();
-  const habit = habits.find(h => h.id === id);
+  const habits = loadHabits();
+  const today  = getTodayString();
+  const habit  = habits.find(h => h.id === id);
   if (!habit) return;
 
   const idx = habit.completedDates.indexOf(today);
@@ -77,11 +93,13 @@ function toggleHabit(id) {
   } else {
     habit.completedDates.splice(idx, 1);
   }
+
+  saveHabits(habits);
   render();
 }
 
 function deleteHabit(id) {
-  habits = habits.filter(h => h.id !== id);
+  saveHabits(loadHabits().filter(h => h.id !== id));
   render();
 }
 
