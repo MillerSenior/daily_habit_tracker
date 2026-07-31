@@ -1,21 +1,31 @@
-// Added: streak calculation for consecutive completed days
+// Key used to read/write habit data in localStorage
 const STORAGE_KEY = 'habit-tracker-v1';
 
+// ── Utilities ────────────────────────────────────────────────────────────────
+
 function getTodayString() {
-  return new Date().toISOString().split('T')[0];
+  return new Date().toISOString().split('T')[0]; // "YYYY-MM-DD"
 }
 
 function formatDate(date) {
   return date.toLocaleDateString('en-US', {
-    weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',
+    weekday: 'long',
+    year:    'numeric',
+    month:   'long',
+    day:     'numeric',
   });
 }
 
 function escapeHtml(str) {
   return str
-    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+    .replace(/&/g,  '&amp;')
+    .replace(/</g,  '&lt;')
+    .replace(/>/g,  '&gt;')
+    .replace(/"/g,  '&quot;')
+    .replace(/'/g,  '&#39;');
 }
+
+// ── Storage ───────────────────────────────────────────────────────────────────
 
 function loadHabits() {
   try {
@@ -29,10 +39,14 @@ function saveHabits(habits) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(habits));
 }
 
-// Walk backwards from today counting consecutive completed days
+// ── Streak calculation ────────────────────────────────────────────────────────
+
+// Returns the number of consecutive days (ending today or yesterday) a habit
+// has been marked complete. A break in the sequence resets the count to zero.
 function calculateStreak(completedDates) {
   if (!completedDates.length) return 0;
 
+  // Work backwards from today; each expected date must be present
   const dateSet = new Set(completedDates);
   const today   = new Date(getTodayString());
   let streak    = 0;
@@ -44,6 +58,7 @@ function calculateStreak(completedDates) {
       streak++;
       cursor.setDate(cursor.getDate() - 1);
     } else {
+      // Allow the streak to start from yesterday even if today isn't done yet
       if (streak === 0) {
         cursor.setDate(cursor.getDate() - 1);
         const yesterday = cursor.toISOString().split('T')[0];
@@ -60,31 +75,39 @@ function calculateStreak(completedDates) {
   return streak;
 }
 
+// ── Render ────────────────────────────────────────────────────────────────────
+
 function render() {
-  const habits   = loadHabits();
-  const list     = document.getElementById('habit-list');
-  const emptyMsg = document.getElementById('empty-message');
-  const today    = getTodayString();
+  const habits      = loadHabits();
+  const list        = document.getElementById('habit-list');
+  const emptyMsg    = document.getElementById('empty-message');
+  const progressSec = document.getElementById('progress-section');
+  const today       = getTodayString();
 
   list.innerHTML = '';
 
   if (!habits.length) {
-    emptyMsg.hidden = false;
+    emptyMsg.hidden    = false;
+    progressSec.hidden = true;
     return;
   }
 
   emptyMsg.hidden = true;
+  progressSec.hidden = false;
+
+  const doneCount = habits.filter(h => h.completedDates.includes(today)).length;
+  updateProgress(doneCount, habits.length);
 
   habits.forEach(habit => {
-    const isDone      = habit.completedDates.includes(today);
-    const streak      = calculateStreak(habit.completedDates);
+    const isDone  = habit.completedDates.includes(today);
+    const streak  = calculateStreak(habit.completedDates);
     const streakLabel = streak > 0
       ? `🔥 ${streak} day${streak !== 1 ? 's' : ''} streak`
       : 'Start your streak today!';
 
     const li = document.createElement('li');
-    li.className  = `habit-item${isDone ? ' done' : ''}`;
-    li.dataset.id = habit.id;
+    li.className   = `habit-item${isDone ? ' done' : ''}`;
+    li.dataset.id  = habit.id;
 
     li.innerHTML = `
       <button class="check-btn" aria-label="${isDone ? 'Unmark' : 'Mark'} complete: ${escapeHtml(habit.name)}">
@@ -103,6 +126,17 @@ function render() {
     list.appendChild(li);
   });
 }
+
+function updateProgress(done, total) {
+  const pct   = total ? Math.round((done / total) * 100) : 0;
+  const fill  = document.getElementById('progress-fill');
+  const label = document.getElementById('progress-label');
+
+  fill.style.width    = pct + '%';
+  label.textContent   = `${done} of ${total} habit${total !== 1 ? 's' : ''} complete today`;
+}
+
+// ── Actions ───────────────────────────────────────────────────────────────────
 
 function addHabit(name) {
   const habits = loadHabits();
@@ -134,9 +168,14 @@ function toggleHabit(id) {
 }
 
 function deleteHabit(id) {
+  const confirmed = window.confirm('Delete this habit? This cannot be undone.');
+  if (!confirmed) return;
+
   saveHabits(loadHabits().filter(h => h.id !== id));
   render();
 }
+
+// ── Init ──────────────────────────────────────────────────────────────────────
 
 document.getElementById('today-date').textContent = formatDate(new Date());
 
