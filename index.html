@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Daily Habit Tracker</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <h1>Daily Habit Tracker</h1>
+        <p class="subtitle">Build consistency, one day at a time.</p>
+        <p class="date" id="today-date"></p>
+      </header>
+
+      <section class="add-section">
+        <form id="add-habit-form">
+          <input
+            type="text"
+            id="habit-input"
+            placeholder="Add a new habit (e.g. Read 20 minutes)"
+            maxlength="60"
+            autocomplete="off"
+            required
+          />
+          <button type="submit">Add</button>
+        </form>
+      </section>
+
+      <section class="progress-section" id="progress-section" hidden>
+        <div class="progress-bar">
+          <div class="progress-fill" id="progress-fill"></div>
+        </div>
+        <p class="progress-label" id="progress-label"></p>
+      </section>
+
+      <section class="habits-section">
+        <ul id="habit-list" class="habit-list" aria-label="Habit list"></ul>
+        <p id="empty-message" class="empty-message">
+          No habits yet. Add one above to get started.
+        </p>
+      </section>
+
+      <footer>
+        <p>Your habits are saved in this browser. No account needed.</p>
+      </footer>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
