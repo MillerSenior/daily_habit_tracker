@@ -1,115 +1,173 @@
-# Prompt History
+# Prompt History — Daily Habit Tracker
 
-This file documents the key prompts I used while building the Daily Habit Tracker. It shows how I collaborated with AI throughout planning, development, and debugging.
-
----
-
-## Planning Phase
-
-### Prompt 1 — Choosing a project idea
-
-> I need to build a small web application as an admissions project. It should solve a real problem, use only HTML, CSS, and JavaScript, and be deployable to GitHub Pages. I want something simple enough to finish in a few hours but meaningful enough to talk about in an interview. Can you help me think through a few options?
-
-**What I learned:** The AI suggested several ideas including a book tracker, habit tracker, and task list. I chose a habit tracker because building consistent habits is something I personally care about, and I knew I could speak authentically about why it matters.
+This file documents the key prompts used while building this project.
+Each prompt follows a structured format to demonstrate intentional AI collaboration.
 
 ---
 
-### Prompt 2 — Defining the problem and value
+## Prompt Format
 
-> I've decided to build a habit tracker. Help me write a clear problem statement and value statement for it — the kind of thing I'd explain to someone who has never heard of the project.
+Every prompt I used follows this structure:
 
-**What I learned:** The AI helped me articulate that the problem isn't a lack of apps — it's friction. Most habit apps are too complex. The value is being able to check in with zero setup and no account.
-
----
-
-### Prompt 3 — Planning the features
-
-> Before I start building, I want to plan what features are actually necessary versus what I could add later. What is the smallest version of a habit tracker that proves the idea works?
-
-**What I learned:** The AI suggested starting with just: add a habit, check it off, see it in a list. That's the Smallest Demonstration of Value. Streaks and a progress bar came second. I agreed with this ordering.
-
----
-
-## Building Phase
-
-### Prompt 4 — Initial file structure
-
-> I'm going to build a simple habit tracker using only HTML, CSS, and JavaScript. No frameworks. It needs to work in a browser and be deployable to GitHub Pages. Can you give me the file structure I should use and explain why?
-
-**What I learned:** The AI recommended `index.html`, `style.css`, and `script.js` — three separate files, one responsibility each. This matched what I learned about separation of concerns in the pre-course material.
+| Field | Purpose |
+|---|---|
+| **Role** | Who or what the AI should act as |
+| **Context** | Background the AI needs before answering |
+| **Task** | Exactly what I am asking for |
+| **Constraints** | What to avoid or limit |
+| **Output Format** | How I want the response structured |
+| **Verification** | How I confirmed the output was correct |
 
 ---
 
-### Prompt 5 — Building the add-habit form
+## Prompt 1 — Choose a Problem
 
-> In my index.html, I want a form where users can type a habit name and click Add. When they submit, the habit should appear in a list below. Show me the HTML and JavaScript for just this part first, before we add anything else.
+| Field | |
+|---|---|
+| **Role** | Software planning advisor |
+| **Context** | I am completing an admissions project for a software engineering program. The project requires a small web application built with HTML, CSS, and JavaScript — no frameworks, no backend. It must be deployable to GitHub Pages. |
+| **Task** | Help me choose a problem to solve. Give me 3 simple options that are small enough to finish in a few hours, easy to explain, and genuinely useful to another person. |
+| **Constraints** | Do not suggest anything that requires a database, user accounts, or external APIs. Keep it simple. |
+| **Output Format** | A short list. For each option: the problem, the value it creates, and why it fits this project. |
+| **Verification** | I can explain the problem and value in one sentence without looking at notes. |
 
-**What I learned:** I asked for just this feature first — not the whole app — because the course taught me to build incrementally. The AI gave me a working form and a render function. I tested it in the browser before moving on.
+**Prompt:**
+> I need to build a small web application as an admissions project. It should solve a real problem using only HTML, CSS, and JavaScript — no frameworks or backend. It needs to deploy to GitHub Pages. Give me 3 simple project ideas. For each one, tell me the problem it solves, the value it creates, and why it fits a one-day build.
 
----
-
-### Prompt 6 — Adding localStorage persistence
-
-> Right now, if I refresh the page all the habits disappear. I want habits to be saved so they come back after a refresh. I don't want to use a database or any backend. What's the right approach?
-
-**What I learned:** The AI explained `localStorage` and showed me how to serialize my habits array to JSON and read it back. I asked follow-up questions to understand why `JSON.parse` could throw an error and how to handle that safely with a try/catch.
-
----
-
-### Prompt 7 — Streak calculation
-
-> I want to add a streak counter that shows how many consecutive days a user has completed each habit. Explain the logic to me first before writing any code, so I can understand the approach.
-
-**What I learned:** I deliberately asked for the explanation before the code. The AI walked me through the idea: start from today, check if today is in the completed dates, then check yesterday, then the day before — stop when you hit a gap. Once I understood it, the implementation made sense to me and I could have described it to someone else.
+**Outcome:** Chose the Habit Tracker. I could explain the problem ("people forget to build habits") and value ("one place to check in with no friction") immediately, which meant I'd be able to talk about it confidently in an interview.
 
 ---
 
-### Prompt 8 — Adding a progress bar
+## Prompt 2 — Plan Before Building
 
-> I want to show a progress bar at the top of the habit list that shows how many habits are done today versus the total. For example "3 of 5 habits complete today." How should I build this?
+| Field | |
+|---|---|
+| **Role** | Engineering mentor |
+| **Context** | I chose to build a Daily Habit Tracker. I have not written any code yet. |
+| **Task** | Help me define the Smallest Demonstration of Value — the minimum version that proves the idea works — and list only the features that are truly required. |
+| **Constraints** | Do not add features I did not ask for. No stretch goals unless I ask. One version at a time. |
+| **Output Format** | Problem → Value → Smallest working version → Required features → Optional features (separate list) |
+| **Verification** | The required feature list is short enough to build in one session. |
 
-**What I learned:** The AI suggested keeping this as a single function I call every time the list re-renders, not as a separate update loop. That kept the code simple and in one place.
+**Prompt:**
+> I'm building a Daily Habit Tracker using only HTML, CSS, and JavaScript. Before I write any code, help me define the smallest version that proves the idea works. What features are truly required versus optional? Keep the required list short — I want to build value first and add features second.
 
----
-
-## Debugging Phase
-
-### Prompt 9 — Streak bug
-
-> My streak calculation seems wrong. If I check a habit off today and it shows "1 day streak," but then I come back the next day without checking it off, it still shows 1. Shouldn't it show 0 once I've missed a day?
-
-**What I learned:** The AI helped me identify that my logic was reading the streak from the last check-in date, not recalculating it forward from today. We rewrote the function to always walk backward from today's date. I tested the fix manually by mocking yesterday's date in the browser console.
-
----
-
-### Prompt 10 — Asking AI to explain generated code
-
-> In the streak function, explain what this line does: `cursor.setDate(cursor.getDate() - 1)`. I want to understand it before I keep it.
-
-**What I learned:** The AI explained that `getDate()` returns the day of the month and `setDate()` lets you set it — passing a value like `-1` wraps automatically to the previous month. This is a JavaScript quirk I wouldn't have known about. I kept the line because I understood it.
+**Outcome:** Required features became: add a habit, check it off today, see the list. That's it. Streaks and progress bar moved to "build next." This prevented me from overbuilding.
 
 ---
 
-## Styling Phase
+## Prompt 3 — File Structure First
 
-### Prompt 11 — CSS design
+| Field | |
+|---|---|
+| **Role** | Frontend developer |
+| **Context** | I am building a static web app — HTML, CSS, JavaScript only. No build tools. Must work by opening index.html directly in a browser and deploy to GitHub Pages. |
+| **Task** | Give me the correct file structure and explain why each file exists. |
+| **Constraints** | No frameworks. No build steps. No extra files I do not need. |
+| **Output Format** | File tree, then one sentence per file explaining its role. |
+| **Verification** | I can explain what each file does and why it is separate from the others. |
 
-> I want my habit tracker to look clean and professional. It should work on both desktop and mobile, and support light and dark mode without requiring a toggle — just use the system preference. I'm using plain CSS, no frameworks. Can you help me build the stylesheet?
+**Prompt:**
+> I'm building a static web app — HTML, CSS, JavaScript only, no build tools or frameworks. It needs to work by opening index.html in a browser and deploy to GitHub Pages. What is the correct file structure and why does each file exist separately?
 
-**What I learned:** The AI used CSS custom properties (`--primary`, `--bg`, etc.) so I could change the whole color scheme in one place. It also showed me `@media (prefers-color-scheme: dark)` for automatic dark mode. I adjusted several colors after seeing them in the browser.
+**Outcome:** Three files: `index.html` (structure), `style.css` (presentation), `script.js` (behavior). I understood why they are separate before I wrote a single line of code.
 
 ---
 
-### Prompt 12 — Accessibility
+## Prompt 4 — Build the Form First
 
-> I want to make sure my buttons have proper labels for screen readers. My check button and delete button don't have visible text — how do I handle that?
+| Field | |
+|---|---|
+| **Role** | JavaScript developer |
+| **Context** | I have an empty index.html and script.js. I want to build the habit tracker one feature at a time, starting with the add-habit form. |
+| **Task** | Give me the HTML for a form with a text input and submit button, and the JavaScript to capture the submission and add the habit to a list on the page. |
+| **Constraints** | No localStorage yet. No streaks. No styling. Just the form and the list working together. Stop there. |
+| **Output Format** | HTML snippet first, then JavaScript. Explain what each block does in one line. |
+| **Verification** | I open the page, type a habit name, click Add, and it appears in the list. |
 
-**What I learned:** The AI recommended `aria-label` attributes on icon-only buttons so screen readers can announce what they do. I added these to every button in the render function.
+**Prompt:**
+> I'm building a habit tracker one feature at a time. Right now I only want the add-habit form working. Give me the HTML for a form with a text input and submit button, and the JavaScript to capture the submission and display the habit in a list. No localStorage, no streaks, no styling yet — just the form and the list. Explain what each part does.
+
+**Outcome:** Form and list worked on first test. I checked off the feature before moving on.
+
+---
+
+## Prompt 5 — Add Persistence
+
+| Field | |
+|---|---|
+| **Role** | JavaScript developer |
+| **Context** | My habit form and list are working. When I refresh the page, all habits disappear because they are stored in a JavaScript array in memory. I want habits to survive a page refresh without using a backend or database. |
+| **Task** | Show me how to save and load the habits array using localStorage. Explain the approach before writing the code. |
+| **Constraints** | No backend. No external libraries. Explain JSON.parse risk and how to handle it safely. |
+| **Output Format** | Explanation first, then two functions: one to save, one to load. Show where to call them. |
+| **Verification** | I add a habit, refresh the page, and it is still there. |
+
+**Prompt:**
+> My habit tracker works but habits disappear on refresh. I want to persist them using localStorage — no backend, no libraries. Before writing the code, explain the approach and any risks I should know about. Then give me a save function and a load function, and show me where to call them.
+
+**Outcome:** Learned that `JSON.parse` can throw on corrupted data and added a try/catch. Asked a follow-up: "Why would localStorage data get corrupted?" — answer helped me understand browser storage limits.
+
+---
+
+## Prompt 6 — Streak Logic, Explained First
+
+| Field | |
+|---|---|
+| **Role** | JavaScript developer and teacher |
+| **Context** | Each habit has a `completedDates` array of date strings like "2026-07-31". I want to show how many consecutive days a habit has been completed, counting backward from today. |
+| **Task** | Explain the algorithm in plain English before writing any code. I want to understand the logic so I can describe it to someone else. |
+| **Constraints** | Do not write the function until I say I understand the explanation. |
+| **Output Format** | Step-by-step plain English explanation. Wait for my confirmation before writing code. |
+| **Verification** | I can explain the streak algorithm out loud without reading the code. |
+
+**Prompt:**
+> I want to add a streak counter to each habit. The habit has a completedDates array of strings like "2026-07-31". I want to count how many consecutive days it has been completed, walking backward from today. Explain the algorithm in plain English first — do not write the function yet. I want to understand the logic before I see the code.
+
+**Outcome:** Understood the approach: start from today, check if it is in the array, move back one day, repeat until there is a gap. Wrote the logic in my own words before asking for the implementation. This is the prompt I am most proud of — I chose to understand before using.
+
+---
+
+## Prompt 7 — Ask AI to Explain Its Own Code
+
+| Field | |
+|---|---|
+| **Role** | JavaScript teacher |
+| **Context** | The streak function uses `cursor.setDate(cursor.getDate() - 1)` to move back one day in a loop. I have never seen this pattern before. |
+| **Task** | Explain exactly what this line does, why it works across month and year boundaries, and whether there is a risk of an infinite loop. |
+| **Constraints** | Explain it simply. Do not rewrite the function. |
+| **Output Format** | Plain English explanation. One concrete example showing a month boundary. |
+| **Verification** | I can explain this line to someone who has never seen it. |
+
+**Prompt:**
+> In my streak function there is this line: `cursor.setDate(cursor.getDate() - 1)`. Explain exactly what it does, why it works at month and year boundaries, and whether there is any risk of an infinite loop. Do not rewrite the function — just explain this line.
+
+**Outcome:** Learned that JavaScript's Date object handles month rollover automatically — passing day 0 gives the last day of the previous month. This was a JavaScript behavior I would not have found in a tutorial. I kept the line because I understood it.
+
+---
+
+## Prompt 8 — Debug a Logic Error
+
+| Field | |
+|---|---|
+| **Role** | Debugging partner |
+| **Context** | My streak counter shows "1 day streak" when I check a habit today. But when I come back the next day without checking it, it still shows "1" instead of resetting to "0." |
+| **Task** | Help me find where the streak calculation is wrong. Walk me through the logic step by step to identify where it breaks. |
+| **Constraints** | Do not rewrite the entire function immediately. Help me find the bug first. |
+| **Output Format** | Walk through the logic with me. Ask me questions. Point to the line that is wrong and explain why before suggesting a fix. |
+| **Verification** | After the fix, a missed day shows 0 and a returning day starts the streak over. |
+
+**Prompt:**
+> My streak counter has a bug. If I check a habit today it shows "1 day streak." But if I skip tomorrow and come back the day after, it still shows "1" instead of resetting. Walk me through the logic to find where it breaks — do not rewrite the function immediately. Help me understand what is wrong first.
+
+**Outcome:** Found that the original logic was reading the last check-in date rather than walking backward from today. The fix was to always start from today's date and move backward. I manually tested the fix using the browser console before accepting it.
 
 ---
 
 ## Reflection
 
-Working with AI on this project felt like pairing with a knowledgeable collaborator who could answer any question instantly — but who also needed me to think clearly about what I actually wanted. The times I asked the AI to explain something before writing it were the most valuable. When I skipped that step, I got code I couldn't fully explain, so I went back and asked.
+The most valuable pattern I developed: **always ask for an explanation before asking for code.**
 
-The biggest lesson: AI doesn't know what I'm trying to build until I tell it clearly. The better my question, the better the answer.
+When I skipped that step, I got working code I could not explain. When I included it, I understood what I was building and could have written it myself with more time.
+
+AI is most useful when I treat it like a senior developer who can answer any question — not a machine that writes code so I do not have to think.
